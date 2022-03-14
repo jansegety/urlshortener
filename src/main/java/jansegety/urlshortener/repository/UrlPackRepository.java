@@ -12,7 +12,9 @@ public interface UrlPackRepository {
 	
 	public void save(UrlPack urlPack);
 	
-	public List<UrlPack> findList();
+	public List<UrlPack> findAll();
+	
+	public void deleteAll();
 	
 	
 }

@@ -1,6 +1,7 @@
 package jansegety.urlshortener.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -25,8 +26,16 @@ public class ImplUrlPackService implements UrlPackService {
 
 	@Override
 	public List<UrlPack> findUrlPackList() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return urlPackRepository.findAll();
+	}
+
+	@Override
+	public Optional<UrlPack> findByShortUrl(String shortUrl) {
+		
+		UrlPack urlPackOrNull = findUrlPackList().stream().filter(urlPack -> urlPack.getShortUrl().equals(shortUrl)).findAny().orElse(null);
+		return Optional.ofNullable(urlPackOrNull);
+		
 	}
 
 }

@@ -12,15 +12,16 @@ import jansegety.urlshortener.service.encoding.Encoder;
  */
 @Component
 @Scope("prototype")
-public class UrlPack implements Cloneable{
+public class UrlPack{
 	
 	private Long id;
 	
 	private String longUrl;
 	private String shortUrl;
-	private Long requestNum=0L;
+	private Integer requestNum=0;
 
 	private Encoder<Long, String> encoder;
+	
 	
 	@Autowired
 	public UrlPack(Encoder<Long, String> encoder) {
@@ -53,6 +54,17 @@ public class UrlPack implements Cloneable{
 		this.shortUrl = shortUrl;
 	}
 	
+	
+	public Integer getRequestNum() {
+		return requestNum;
+	}
+
+
+	public void setRequestNum(Integer requestNum) {
+		this.requestNum = requestNum;
+	}
+
+
 	public boolean isIdAssigned()
 	{
 		boolean isIdAssigned = true;
@@ -84,14 +96,6 @@ public class UrlPack implements Cloneable{
 		return "UrlPack [id=" + id + ", longUrl=" + longUrl + ", shortUrl=" + shortUrl + "]";
 	}
 	
-	@Override
-	public UrlPack clone() {
-		try {
-			return (UrlPack)super.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException("UrlPack Entity를 clone 할 수 없습니다.", e);
-		}
-	}
 	
 	
 

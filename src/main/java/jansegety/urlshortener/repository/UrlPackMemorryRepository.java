@@ -3,11 +3,14 @@ package jansegety.urlshortener.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import jansegety.urlshortener.entity.UrlPack;
 
+@Repository
 public class UrlPackMemorryRepository implements UrlPackRepository{
 	
-    private final List<UrlPack> urlPackList = new ArrayList<>();
+    private List<UrlPack> urlPackList = new ArrayList<>();
 
 	@Override
 	synchronized public void save(UrlPack urlPack) {
@@ -17,6 +20,7 @@ public class UrlPackMemorryRepository implements UrlPackRepository{
 			
 		//Id 할당
 		int lastIndex = urlPackList.size();
+		System.out.println("마지막 index + 1 =" + Long.valueOf(lastIndex+1));
 		urlPack.setIdCreatingShortUrl(Long.valueOf(lastIndex+1));
 		
 		
@@ -26,17 +30,19 @@ public class UrlPackMemorryRepository implements UrlPackRepository{
 	
 
 	@Override
-	public List<UrlPack> findList() {
+	public List<UrlPack> findAll() {
 		
-		List<UrlPack> copyOfList = new ArrayList<UrlPack>();
-		for( UrlPack urlPack : urlPackList )
-		{
-				copyOfList.add(urlPack.clone());
-		}
 		
-		return copyOfList ;
+		return urlPackList ;
 	}
-	
+
+
+	@Override
+	public void deleteAll() {
+		
+		this.urlPackList = new ArrayList<>();
+	}
+
 	
 	
 

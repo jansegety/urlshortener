@@ -5,8 +5,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -53,24 +51,6 @@ class UrlPackMemorryRepositoryTest {
 		
 	}
 	
-	@Test
-	@DisplayName("반환 받은 list의 entity의 상태를 바꿔도 저장소의 entity애 영향이 없어야 한다.")
-	public void when_entityInTheReturnedListIsChanged_then_entityInTheRepositoryShouldNotChange()
-	{
-		UrlPack urlPackSaved = new UrlPack(encoder);
-		urlPackSaved.setLongUrl("www.111.111");
-		repository.save(urlPackSaved);
-		
-		List<UrlPack> findList = repository.findList();
-		
-		UrlPack urlPackReturned = findList.get(0);
-		assertThat(urlPackReturned.getLongUrl(), is(equalTo("www.111.111")));
-		urlPackReturned.setLongUrl("aaa.aaa.aaa");
-		
-		assertThat(urlPackSaved.getLongUrl(), is(equalTo("www.111.111")));
-		
-		
-	}
 
 	
 
