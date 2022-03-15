@@ -61,13 +61,13 @@ class RedirectControllerTest {
 	void when_requestShortUrlRegistered_then_requestNumPlusOne() throws Exception {
 		
 		mock.perform(post("/urlpack/registform").param("longUrl", "WWW.ABCDEFG.HIJKLMNOP"));
-		String shortUrl = encoder.encoding(1L);
-		UrlPack urlPack = urlPackService.findByValueEncoded(shortUrl).get();
+		String valueEncoded = encoder.encoding(1L);
+		UrlPack urlPack = urlPackService.findByValueEncoded(valueEncoded).get();
 		
-		mock.perform(get("/"+shortUrl)); //request 1
+		mock.perform(get("/"+valueEncoded)); //request 1
 		assertThat(urlPack.getRequestNum(), equalTo(1));
 		
-		mock.perform(get("/"+shortUrl)); //request 2
+		mock.perform(get("/"+valueEncoded)); //request 2
 		assertThat(urlPack.getRequestNum(), equalTo(2));
 		
 	}

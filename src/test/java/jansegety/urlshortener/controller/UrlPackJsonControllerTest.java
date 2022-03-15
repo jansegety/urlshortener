@@ -48,10 +48,10 @@ class UrlPackJsonControllerTest {
 	}
 
 	@Test
-	@DisplayName("/urlpack/util/shorturl 요청이 오면 createShortUrlDto 객체 형태로 응답이 되어야 한다.")
+	@DisplayName("/urlpack/util/shorturl로 요청이 오면 원래url 단축url 정보 등이 포함된 createShortUrlDto 객체 형태로 응답이 되어야 한다.")
 	void when_requestShortUrl_then_responseInTheFormOfCreateShortUrlDto() throws Exception {
 		
-		String longUrl = "www.long.www";
+		String longUrl = "http://www.long.www.long.www.long.wwwlong";
 		
 		mock.perform(post("/urlpack/util/shorturl").param("longUrl",longUrl).contentType(jsonType))
 		.andExpect(status().isOk())

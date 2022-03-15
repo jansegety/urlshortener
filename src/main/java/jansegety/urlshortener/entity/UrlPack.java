@@ -37,7 +37,7 @@ public class UrlPack{
 		if(isIdAssigned())
 			throw new IllegalStateException("id가 이미 할당되었습니다.");
 		
-		createValueEncoded(id); //id할당시 자동으로 shortUrl 생성
+		createValueEncoded(id); //id할당시 자동으로 valueEncoded 생성
 		
 		this.id = id;
 	}
