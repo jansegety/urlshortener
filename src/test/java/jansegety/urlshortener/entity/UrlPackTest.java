@@ -62,7 +62,7 @@ class UrlPackTest {
 		urlPack.setIdCreatingShortUrl(12345L);
 		String encodedValue = encoder.encoding(12345L);
 		
-		assertThat(urlPack.getShortUrl(), is(equalTo(encodedValue)));
+		assertThat(urlPack.getValueEncoded(), is(equalTo(encodedValue)));
 		
 	}
 	

@@ -22,7 +22,7 @@ public class RedirectController {
 	@RequestMapping("/{shortUrl}")
 	public void redirectToLongUrl(@PathVariable String shortUrl, HttpServletResponse response) {
 		
-		Optional<UrlPack> opUrlPack = urlPackService.findByShortUrl(shortUrl);
+		Optional<UrlPack> opUrlPack = urlPackService.findByValueEncoded(shortUrl);
 		
 		if(opUrlPack.isEmpty())
 		{

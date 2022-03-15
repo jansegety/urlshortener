@@ -7,7 +7,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class UrlPackRegistFormDto {
+public class UrlPackRegistConfirmationDto {
 	
 	private String longUrl;
 	private String shortUrl;

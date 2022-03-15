@@ -10,10 +10,10 @@ import jansegety.urlshortener.entity.UrlPack;
 @Service
 public interface UrlPackService {
 	
-	public void registCreatingShortUrl(UrlPack urlPack);
+	public void registAndEncoding(UrlPack urlPack);
 	
 	public List<UrlPack> findUrlPackList();
 	
-	public Optional<UrlPack> findByShortUrl(String shortUrl); 
+	public Optional<UrlPack> findByValueEncoded(String shortUrl); 
 	
 }

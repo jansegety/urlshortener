@@ -17,7 +17,7 @@ public class UrlPack{
 	private Long id;
 	
 	private String longUrl;
-	private String shortUrl;
+	private String valueEncoded;
 	private Integer requestNum=0;
 
 	private Encoder<Long, String> encoder;
@@ -37,7 +37,7 @@ public class UrlPack{
 		if(isIdAssigned())
 			throw new IllegalStateException("id가 이미 할당되었습니다.");
 		
-		createShortUrl(id); //id할당시 자동으로 shortUrl 생성
+		createValueEncoded(id); //id할당시 자동으로 shortUrl 생성
 		
 		this.id = id;
 	}
@@ -47,11 +47,8 @@ public class UrlPack{
 	public void setLongUrl(String longUrl) {
 		this.longUrl = longUrl;
 	}
-	public String getShortUrl() {
-		return shortUrl;
-	}
-	public void setShortUrl(String shortUrl) {
-		this.shortUrl = shortUrl;
+	public String getValueEncoded() {
+		return valueEncoded;
 	}
 	
 	
@@ -82,18 +79,18 @@ public class UrlPack{
 		
 		requestNum++;
 		
-		return shortUrl;
+		return valueEncoded;
 	}
 	
 	
-	private void createShortUrl(Long id) {
-		this.shortUrl = encoder.encoding(id);
+	private void createValueEncoded(Long id) {
+		this.valueEncoded = encoder.encoding(id);
 	}
 	
 	
 	@Override
 	public String toString() {
-		return "UrlPack [id=" + id + ", longUrl=" + longUrl + ", shortUrl=" + shortUrl + "]";
+		return "UrlPack [id=" + id + ", longUrl=" + longUrl + ", valueEncoded=" + valueEncoded + "]";
 	}
 	
 	

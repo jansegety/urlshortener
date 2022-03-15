@@ -62,7 +62,7 @@ class RedirectControllerTest {
 		
 		mock.perform(post("/urlpack/registform").param("longUrl", "WWW.ABCDEFG.HIJKLMNOP"));
 		String shortUrl = encoder.encoding(1L);
-		UrlPack urlPack = urlPackService.findByShortUrl(shortUrl).get();
+		UrlPack urlPack = urlPackService.findByValueEncoded(shortUrl).get();
 		
 		mock.perform(get("/"+shortUrl)); //request 1
 		assertThat(urlPack.getRequestNum(), equalTo(1));

@@ -16,10 +16,10 @@ public class ImplUrlPackService implements UrlPackService {
 	private final UrlPackRepository urlPackRepository;
 	
 	@Override
-	public void registCreatingShortUrl(UrlPack urlPack) {
+	public void registAndEncoding(UrlPack urlPack) {
 		
 		//urlPcak은 id가 저장되면서 할당된다.
-		//urlPack은 id가 할당 될 때 자동으로 shortUrl을 생성한다.
+		//urlPack은 id가 할당 될 때 자동으로 valueEncoded을 생성한다.
 		urlPackRepository.save(urlPack);
 		
 	}
@@ -31,9 +31,9 @@ public class ImplUrlPackService implements UrlPackService {
 	}
 
 	@Override
-	public Optional<UrlPack> findByShortUrl(String shortUrl) {
+	public Optional<UrlPack> findByValueEncoded(String valueEncoded) {
 		
-		UrlPack urlPackOrNull = findUrlPackList().stream().filter(urlPack -> urlPack.getShortUrl().equals(shortUrl)).findAny().orElse(null);
+		UrlPack urlPackOrNull = findUrlPackList().stream().filter(urlPack -> urlPack.getValueEncoded().equals(valueEncoded)).findAny().orElse(null);
 		return Optional.ofNullable(urlPackOrNull);
 		
 	}

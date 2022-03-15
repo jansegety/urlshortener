@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import jansegety.urlshortener.controller.viewdto.UrlInfoForUrlPackListDto;
 import jansegety.urlshortener.repository.UrlPackRepository;
 import jansegety.urlshortener.service.encoding.Encoder;
+import jansegety.urlshortener.util.UrlMaker;
 
 @SpringBootTest
 class UrlControllerTest {
@@ -56,13 +57,13 @@ class UrlControllerTest {
 	
 	
 	@Test
-	@DisplayName("create 함수는 특별한 예외가 없다면 문자열 urlpack/registform 반환")
-	void when_requestCreateNewEntityWithNoException_then_createFuncReturnStringUrlPackRegistForm() throws Exception {
+	@DisplayName("create 함수는 특별한 예외가 없다면 문자열 urlpack/registconfirmation 반환")
+	void when_requestCreateNewEntityWithNoException_then_createFuncReturnStringUrlPackRegistConfrimation() throws Exception {
 		
 		mock.perform(post("/urlpack/registform")
 		.param("longUrl", "WWW.ABCDEFG.HIJKLMNOP"))
 		.andExpect(status().isOk())
-		.andExpect(view().name("urlpack/registform"));
+		.andExpect(view().name("urlpack/registconfirmation"));
 	
 	}
 	
@@ -76,7 +77,7 @@ class UrlControllerTest {
 			mock.perform(post("/urlpack/registform")
 				.param("longUrl", longUrl))
 				.andExpect(model().attribute("registFormDto", hasProperty("longUrl", equalTo(longUrl))))
-				.andExpect(model().attribute("registFormDto", hasProperty("shortUrl", equalTo(encoder.encoding(1L))))); //B is Encoded Value by base62 with 1L
+				.andExpect(model().attribute("registFormDto", hasProperty("shortUrl", equalTo(UrlMaker.makeUrlWithDomain(encoder.encoding(1L)))))); //B is Encoded Value by base62 with 1L
 		
 	}
 	
@@ -101,11 +102,13 @@ class UrlControllerTest {
 		
 		UrlInfoForUrlPackListDto urlInfo1 = new UrlInfoForUrlPackListDto();
 		urlInfo1.setLongUrl("AAA.AAA.AAA");
-		urlInfo1.setShortUrl(encoder.encoding(1L));
+		urlInfo1.setShortUrl(UrlMaker.makeUrlWithDomain(encoder.encoding(1L)));
+		urlInfo1.setRequstNum(0);
 		
 		UrlInfoForUrlPackListDto urlInfo2 = new UrlInfoForUrlPackListDto();
 		urlInfo2.setLongUrl("BBB.BBB.BBB");
-		urlInfo2.setShortUrl(encoder.encoding(2L));
+		urlInfo2.setShortUrl(UrlMaker.makeUrlWithDomain(encoder.encoding(2L)));
+		urlInfo2.setRequstNum(0);
 		
 		mock.perform(get("/urlpack/list"))
 		.andExpect(model().attribute("urlPackListDto", 

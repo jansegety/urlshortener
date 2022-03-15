@@ -3,6 +3,7 @@ package jansegety.urlshortener.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jansegety.urlshortener.controller.viewdto.UrlInfoForUrlPackListDto;
 import jansegety.urlshortener.controller.viewdto.UrlPackListDto;
-import jansegety.urlshortener.controller.viewdto.UrlPackRegistFormDto;
+import jansegety.urlshortener.controller.viewdto.UrlPackRegistConfirmationDto;
 import jansegety.urlshortener.entity.UrlPack;
 import jansegety.urlshortener.service.UrlPackService;
+import jansegety.urlshortener.util.UrlMaker;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -24,6 +26,10 @@ public class UrlPackController {
 	
 	private final UrlPackService urlPackService;
 	private final ApplicationContext applicationContext;
+	
+	
+	
+	
 
 	@RequestMapping(value = "/registform", method = RequestMethod.GET)
 	public String createForm() {
@@ -37,14 +43,14 @@ public class UrlPackController {
 		
 		UrlPack urlPack = applicationContext.getBean(UrlPack.class);
 		urlPack.setLongUrl(longUrl);
-		urlPackService.registCreatingShortUrl(urlPack);
+		urlPackService.registAndEncoding(urlPack);
 		
-		UrlPackRegistFormDto registFormDto = new UrlPackRegistFormDto();
+		UrlPackRegistConfirmationDto registFormDto = new UrlPackRegistConfirmationDto();
 		registFormDto.setLongUrl(urlPack.getLongUrl());
-		registFormDto.setShortUrl(urlPack.getShortUrl());
+		registFormDto.setShortUrl(UrlMaker.makeUrlWithDomain(urlPack.getValueEncoded()));
 		model.addAttribute("registFormDto", registFormDto);
 		
-		return "urlpack/registform";
+		return "urlpack/registconfirmation";
 	}
 	
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -57,7 +63,7 @@ public class UrlPackController {
 		{
 			UrlInfoForUrlPackListDto urlInfo = new UrlInfoForUrlPackListDto();
 			urlInfo.setLongUrl(urlPack.getLongUrl());
-			urlInfo.setShortUrl(urlPack.getShortUrl());
+			urlInfo.setShortUrl(UrlMaker.makeUrlWithDomain(urlPack.getValueEncoded()));
 			urlInfo.setRequstNum(urlPack.getRequestNum());
 			urlInfoList.add(urlInfo);
 		}
