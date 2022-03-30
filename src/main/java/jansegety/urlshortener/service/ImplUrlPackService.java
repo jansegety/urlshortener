@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import jansegety.urlshortener.entity.UrlPack;
+import jansegety.urlshortener.entity.User;
 import jansegety.urlshortener.repository.UrlPackRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -18,14 +19,16 @@ public class ImplUrlPackService implements UrlPackService {
 	@Override
 	public void registAndEncoding(UrlPack urlPack) {
 		
-		//urlPcak은 id가 저장되면서 할당된다.
-		//urlPack은 id가 할당 될 때 자동으로 valueEncoded을 생성한다.
+		//urlPcak은 id가 할당된다.
 		urlPackRepository.save(urlPack);
+		//할당된 id로 valueEncoded 생성
+		urlPack.createValueEncoded();
+		
 		
 	}
 
 	@Override
-	public List<UrlPack> findUrlPackList() {
+	public List<UrlPack> findAll() {
 		
 		return urlPackRepository.findAll();
 	}
@@ -33,9 +36,15 @@ public class ImplUrlPackService implements UrlPackService {
 	@Override
 	public Optional<UrlPack> findByValueEncoded(String valueEncoded) {
 		
-		UrlPack urlPackOrNull = findUrlPackList().stream().filter(urlPack -> urlPack.getValueEncoded().equals(valueEncoded)).findAny().orElse(null);
+		UrlPack urlPackOrNull = findAll().stream().filter(urlPack -> urlPack.getValueEncoded().equals(valueEncoded)).findAny().orElse(null);
 		return Optional.ofNullable(urlPackOrNull);
 		
+	}
+
+	@Override
+	public List<UrlPack> findByUser(User user) {
+		
+		return urlPackRepository.findByUser(user);
 	}
 
 }

@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -12,44 +13,95 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import jansegety.urlshortener.controller.viewdto.UrlInfoForUrlPackListDto;
+import jansegety.urlshortener.entity.UrlPack;
+import jansegety.urlshortener.entity.User;
+import jansegety.urlshortener.interceptor.AuthLoginInterceptor;
 import jansegety.urlshortener.repository.UrlPackRepository;
+import jansegety.urlshortener.service.UrlPackService;
+import jansegety.urlshortener.service.UserService;
 import jansegety.urlshortener.service.encoding.Encoder;
 import jansegety.urlshortener.util.UrlMaker;
 
 @SpringBootTest
-class UrlControllerTest {
+class UrlPackControllerTest {
 
 	@Autowired
-	private UrlPackController urlController;
+	private UrlPackController urlPackController;
+	
 	@Autowired
 	private UrlPackRepository urlPackRepository;
+	
+	@Autowired
+	private UrlPackService urlPackService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private BeanFactory beanFactory;
+	
+	@Autowired
+	private AuthLoginInterceptor authLoginInterceptor;
 	
 	@Autowired
 	private Encoder<Long, String> encoder;
 	
 	private MockMvc mock;
+	private User testUser;
+	private final String LONG_URL =  "WWW.ABCDEFG.HIJKLMNOP";
 	
 	
 	@BeforeEach
 	public void setup() {
-		mock = MockMvcBuilders.standaloneSetup(urlController).build();
+		
+		mock = MockMvcBuilders.standaloneSetup(urlPackController)
+				.setViewResolvers(getViewResolver()).build();
 		urlPackRepository.deleteAll();
+		UrlPack testUrlPack = beanFactory.getBean(UrlPack.class);
+		testUrlPack.setLongUrl(LONG_URL);
+		
+		//user 생성
+		testUser = new User();
+		userService.save(testUser);
+		
+		//user와 urlpack 연결
+		testUrlPack.setUser(testUser);
+		
+		//urlpack 등록
+		urlPackService.registAndEncoding(testUrlPack);
+		
+		
+		
+	
+		
 	}
 	
+	 public ViewResolver getViewResolver() {
+	        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+	        resolver.setPrefix("classpath:/templates/");
+	        resolver.setSuffix(".html");
+	        return resolver;
+	 }
+	 
+	 
+	
+	 
 	@Test
 	@DisplayName("createForm 함수는 특별한 예외가 없다면 문자열 urlpack/registform 반환")
 	void when_requestFormWithNoException_then_createFormFuncReturnStringUrlPackRegistForm() throws Exception {
 		
-		mock.perform(get("/urlpack/registform")
-		.param("longUrl", "WWW.ABCDEFG.HIJKLMNOP"))
+		mock.perform(get("/urlpack/registform").requestAttr("loginUser", testUser))
 		.andExpect(status().isOk())
-		.andExpect(view().name("urlpack/registform"));
+		.andExpect(view().name("/urlpack/registform")); 
 		
 		
 	}
@@ -61,9 +113,9 @@ class UrlControllerTest {
 	void when_requestCreateNewEntityWithNoException_then_createFuncReturnStringUrlPackRegistConfrimation() throws Exception {
 		
 		mock.perform(post("/urlpack/registform")
-		.param("longUrl", "WWW.ABCDEFG.HIJKLMNOP"))
+		.param("longUrl", LONG_URL).sessionAttr("userId", 1L).requestAttr("loginUser", testUser))
 		.andExpect(status().isOk())
-		.andExpect(view().name("urlpack/registconfirmation"));
+		.andExpect(view().name("/urlpack/registconfirmation"));
 	
 	}
 	
@@ -72,13 +124,13 @@ class UrlControllerTest {
 	@DisplayName("create 함수는 입력받은 longUrl과 단축된 shortUrl을 가지는 RegistFormDto를 모델에 포함")
 	void when_requestCreateNewEntityWithNoException_then_modelHasRegistFormDtoObjectWithLongUrlAndShortUrl() throws Exception {
 		
-		    String longUrl = "WWW.ABCDEFG.HIJKLMNOP";
-		
-			mock.perform(post("/urlpack/registform")
-				.param("longUrl", longUrl))
-				.andExpect(model().attribute("registFormDto", hasProperty("longUrl", equalTo(longUrl))))
-				.andExpect(model().attribute("registFormDto", hasProperty("shortUrl", equalTo(UrlMaker.makeUrlWithDomain(encoder.encoding(1L)))))); //B is Encoded Value by base62 with 1L
-		
+		urlPackRepository.deleteAll();
+		    
+		mock.perform(post("/urlpack/registform")
+			.param("longUrl", LONG_URL).sessionAttr("userId", 1L).requestAttr("loginUser", testUser))
+			.andExpect(model().attribute("registFormDto", hasProperty("longUrl", equalTo(LONG_URL))))
+			.andExpect(model().attribute("registFormDto", hasProperty("shortUrl", equalTo(UrlMaker.makeUrlWithDomain(encoder.encoding(1L)))))); //B is Encoded Value by base62 with 1L
+	
 	}
 	
 	
@@ -87,9 +139,9 @@ class UrlControllerTest {
 	@DisplayName("show 함수는 특별한 예외가 없다면 문자열 urlpack/list 반환")
 	void when_requestShowListWithNoException_then_showFuncReturnStringUrlPackList() throws Exception {
 		
-		mock.perform(get("/urlpack/list"))
+		mock.perform(get("/urlpack/list").requestAttr("loginUser", testUser))
 		.andExpect(status().isOk())
-		.andExpect(view().name("urlpack/list"));
+		.andExpect(view().name("/urlpack/list"));
 		
 	}
 	
@@ -97,8 +149,10 @@ class UrlControllerTest {
 	@DisplayName("show 함수는 urlPack 저장소에 있던 list를 model에 dto로 넣어 반환")
 	void when_requestShowListWithNoException_then_putTheListInTheUrlPackStorageAsDtoInTheModelAndReturnIt() throws Exception {
 		
-		mock.perform(post("/urlpack/registform").param("longUrl", "AAA.AAA.AAA"));
-		mock.perform(post("/urlpack/registform").param("longUrl", "BBB.BBB.BBB"));
+		urlPackRepository.deleteAll();
+		
+		mock.perform(post("/urlpack/registform").param("longUrl", "AAA.AAA.AAA").sessionAttr("userId", 1L).requestAttr("loginUser", testUser));
+		mock.perform(post("/urlpack/registform").param("longUrl", "BBB.BBB.BBB").sessionAttr("userId", 1L).requestAttr("loginUser", testUser));
 		
 		UrlInfoForUrlPackListDto urlInfo1 = new UrlInfoForUrlPackListDto();
 		urlInfo1.setLongUrl("AAA.AAA.AAA");
@@ -110,7 +164,7 @@ class UrlControllerTest {
 		urlInfo2.setShortUrl(UrlMaker.makeUrlWithDomain(encoder.encoding(2L)));
 		urlInfo2.setRequstNum(0);
 		
-		mock.perform(get("/urlpack/list"))
+		mock.perform(get("/urlpack/list").requestAttr("loginUser", testUser))
 		.andExpect(model().attribute("urlPackListDto", 
 				hasProperty("urlInfoList", 
 				hasItems(urlInfo1, urlInfo2))));

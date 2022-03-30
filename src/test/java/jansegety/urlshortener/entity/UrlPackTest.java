@@ -46,9 +46,9 @@ class UrlPackTest {
 	@DisplayName("id가 할당된 상태에서 다시 할당하면 IllegalStateException 발생")
 	void when_idReAssigned_then_throwIllegalStateException() {
 		
-		urlPack.setIdCreatingShortUrl(1L);
+		urlPack.setId(1L);
 		assertThrows(IllegalStateException.class, ()->{
-			urlPack.setIdCreatingShortUrl(2L);
+			urlPack.setId(2L);
 		});
 		
 	}
@@ -59,7 +59,9 @@ class UrlPackTest {
 		
 		Encoder<Long, String> encoder = new Base62Encoder();
 		
-		urlPack.setIdCreatingShortUrl(12345L);
+		urlPack.setId(12345L);
+		urlPack.createValueEncoded();
+		
 		String encodedValue = encoder.encoding(12345L);
 		
 		assertThat(urlPack.getValueEncoded(), is(equalTo(encodedValue)));

@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,6 +33,8 @@ class RedirectControllerTest {
 	private UrlPackRepository urlPackRepository;
 	@Autowired
 	private UrlPackService urlPackService;
+	@Autowired
+	private BeanFactory beanFactory;
 	
 	@Autowired
 	private Encoder<Long, String> encoder;
@@ -43,13 +46,15 @@ class RedirectControllerTest {
 	public void setup() {
 		mock = MockMvcBuilders.standaloneSetup(urlController, redirectController).build();
 		urlPackRepository.deleteAll();
+		UrlPack testUrlPack = beanFactory.getBean(UrlPack.class);
+		testUrlPack.setLongUrl("WWW.ABCDEFG.HIJKLMNOP");
+		urlPackService.registAndEncoding(testUrlPack);
 	}
 
 	@Test
 	@DisplayName("등록된 shortUrl로 요청시 redirect 응답")
 	void when_requestShortUrlRegistered_then_responseRedirectToLongUrl() throws Exception {
 		
-		mock.perform(post("/urlpack/registform").param("longUrl", "WWW.ABCDEFG.HIJKLMNOP"));
 		String shortUrl = encoder.encoding(1L);
 		mock.perform(get("/"+shortUrl)).andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("WWW.ABCDEFG.HIJKLMNOP"));
 		
@@ -60,7 +65,6 @@ class RedirectControllerTest {
 	@DisplayName("등록된 shortUrl로 요청시 요청횟수 1 증가")
 	void when_requestShortUrlRegistered_then_requestNumPlusOne() throws Exception {
 		
-		mock.perform(post("/urlpack/registform").param("longUrl", "WWW.ABCDEFG.HIJKLMNOP"));
 		String valueEncoded = encoder.encoding(1L);
 		UrlPack urlPack = urlPackService.findByValueEncoded(valueEncoded).get();
 		
@@ -75,7 +79,7 @@ class RedirectControllerTest {
 	@Test
 	@DisplayName("등록되지 않은 shortUrl로 요청시 400 bad request 응답")
 	void when_requestShortUrlNotRegistered_then_responseBadRequest400() throws Exception {
-		String shortUrl = encoder.encoding(1L);
+		String shortUrl = encoder.encoding(10L);
 		mock.perform(get("/"+shortUrl)).andExpect(status().is4xxClientError());
 		
 	}

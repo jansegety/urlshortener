@@ -23,11 +23,12 @@ class UrlPackMemorryRepositoryTest {
 	public void when_saveUrlPackIdAssigned_then_throwIllegalArgumentException() {
 		
 		UrlPack urlPack = new UrlPack(encoder);
-		urlPack.setIdCreatingShortUrl(1L);
+		urlPack.setId(1L);
+		urlPack.createValueEncoded();
 		
 		UrlPack IdAssignedUrlPack = urlPack;
 		
-		assertThrows(IllegalArgumentException.class, ()->{
+		assertThrows(IllegalStateException.class, ()->{
 			repository.save(IdAssignedUrlPack);
 		});
 		

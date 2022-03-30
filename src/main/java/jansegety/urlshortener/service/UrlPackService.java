@@ -6,13 +6,16 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import jansegety.urlshortener.entity.UrlPack;
+import jansegety.urlshortener.entity.User;
 
 @Service
 public interface UrlPackService {
 	
 	public void registAndEncoding(UrlPack urlPack);
 	
-	public List<UrlPack> findUrlPackList();
+	public List<UrlPack> findAll();
+	
+	public List<UrlPack> findByUser(User user);
 	
 	public Optional<UrlPack> findByValueEncoded(String shortUrl); 
 	

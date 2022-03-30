@@ -6,24 +6,20 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import jansegety.urlshortener.entity.UrlPack;
+import jansegety.urlshortener.entity.User;
 
 @Repository
 public class UrlPackMemorryRepository implements UrlPackRepository{
 	
     private List<UrlPack> urlPackList = new ArrayList<>();
+    
+    private Long lastIndex = 1L;
 
 	@Override
 	synchronized public void save(UrlPack urlPack) {
-		
-		if(urlPack.isIdAssigned())
-			throw new IllegalArgumentException("이미 id가 할당된 entity입니다.");
 			
 		//Id 할당
-		int lastIndex = urlPackList.size();
-		System.out.println("마지막 index + 1 =" + Long.valueOf(lastIndex+1));
-		urlPack.setIdCreatingShortUrl(Long.valueOf(lastIndex+1));
-		
-		
+		urlPack.setId(lastIndex++);
 		urlPackList.add(urlPack);
 		
 	}
@@ -41,6 +37,14 @@ public class UrlPackMemorryRepository implements UrlPackRepository{
 	public void deleteAll() {
 		
 		this.urlPackList = new ArrayList<>();
+		lastIndex = 1L;
+	}
+
+
+	@Override
+	public List<UrlPack> findByUser(User user) {
+		
+		return urlPackList.stream().filter(e->e.getUser()==null?false:e.getUser().equals(user)).toList();
 	}
 
 	
