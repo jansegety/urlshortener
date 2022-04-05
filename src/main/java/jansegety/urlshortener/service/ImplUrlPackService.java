@@ -17,33 +17,28 @@ public class ImplUrlPackService implements UrlPackService {
 	private final UrlPackRepository urlPackRepository;
 	
 	@Override
-	public void registAndEncoding(UrlPack urlPack) {
-		
-		//urlPcak은 id가 할당된다.
+	public void regist(UrlPack urlPack) {
 		urlPackRepository.save(urlPack);
-		//할당된 id로 valueEncoded 생성
-		urlPack.createValueEncoded();
-		
-		
 	}
 
 	@Override
 	public List<UrlPack> findAll() {
-		
 		return urlPackRepository.findAll();
 	}
 
 	@Override
 	public Optional<UrlPack> findByValueEncoded(String valueEncoded) {
+		UrlPack urlPackOrNull = findAll().stream()
+			.filter(urlPack -> urlPack.getValueEncoded()
+			.equals(valueEncoded))
+			.findAny()
+			.orElse(null);
 		
-		UrlPack urlPackOrNull = findAll().stream().filter(urlPack -> urlPack.getValueEncoded().equals(valueEncoded)).findAny().orElse(null);
 		return Optional.ofNullable(urlPackOrNull);
-		
 	}
 
 	@Override
 	public List<UrlPack> findByUser(User user) {
-		
 		return urlPackRepository.findByUser(user);
 	}
 

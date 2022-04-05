@@ -12,42 +12,30 @@ import jansegety.urlshortener.entity.User;
 public class UrlPackMemorryRepository implements UrlPackRepository{
 	
     private List<UrlPack> urlPackList = new ArrayList<>();
-    
     private Long lastIndex = 1L;
 
 	@Override
 	synchronized public void save(UrlPack urlPack) {
-			
-		//Id 할당
 		urlPack.setId(lastIndex++);
 		urlPackList.add(urlPack);
-		
 	}
 	
-
 	@Override
 	public List<UrlPack> findAll() {
-		
-		
-		return urlPackList ;
+		return urlPackList;
 	}
-
 
 	@Override
 	public void deleteAll() {
-		
 		this.urlPackList = new ArrayList<>();
 		lastIndex = 1L;
 	}
 
-
 	@Override
 	public List<UrlPack> findByUser(User user) {
-		
-		return urlPackList.stream().filter(e->e.getUser()==null?false:e.getUser().equals(user)).toList();
+		return urlPackList.stream()
+			.filter(e->e.getUser()==null ? false : e.getUser().equals(user))
+			.toList();
 	}
-
-	
-	
 
 }

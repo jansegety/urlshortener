@@ -20,20 +20,14 @@ public class ImplUserService implements UserService {
 		userRepository.save(user);
 	}
 	
-
 	@Override
 	public Optional<User> findById(Long id) {
-		
 		return userRepository.findById(id);
 	}
-
 
 	@Override
 	public Optional<User> findByLoginForm(LoginForm loginForm) {
 		return userRepository.findByEmail(loginForm.getEmail());
 	}
-
-
-	
 
 }

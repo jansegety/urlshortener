@@ -9,11 +9,7 @@ import lombok.ToString;
 @ToString
 public class CreateShortUrlDto {
 	
-	private String message;
-	
 	private Result result;
-	
-	private String code;
 	
 	@Getter
 	@Setter

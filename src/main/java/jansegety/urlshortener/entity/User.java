@@ -33,7 +33,6 @@ public class User {
 	@OneToMany(mappedBy ="user")
 	List<ClientApplication> clientApplicationList = new ArrayList<>();
 	
-	
 	public void setId(Long id) {
 		
 		if(this.id != null)
@@ -42,40 +41,30 @@ public class User {
 		this.id = id;
 	}
 	
-	
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-
 	@Override
 	public int hashCode() {
-		
 		int result = (int) (id ^ (id >>> 32));
 	    result = 31 * result + id.hashCode();
-	    
 		return result;
 	}
 
-
 	@Override
 	public boolean equals(Object obj) {
-		
 		User user = (User)obj;
-		
 		return this.id == user.id;
 	}
-
 
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", email=" + email + ", password=" + password + "]";
 	}
-	
-	
-	
 	
 }

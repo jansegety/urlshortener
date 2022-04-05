@@ -17,37 +17,33 @@ public class UserMemorryRepository implements UserRepository {
 
 	@Override
 	public void save(User user) {
-		
 		user.setId(nextIndex);
 		nextIndex++;
 		userList.add(user);
-		
-		
 	}
 	
 	@Override
 	public Optional<User> findById(Long id){
-		Optional<User> userOp = userList.stream().filter(e->e.getId() == id).findAny();
+		Optional<User> userOp = userList.stream()
+			.filter(e->e.getId() == id)
+			.findAny();
+		
 		return userOp;
 	}
-	
 	
 	@Override
 	public Optional<User> findByEmail(String email) {
-		Optional<User> userOp = userList.stream().filter(e->e.getEmail().equals(email)).findAny();
+		Optional<User> userOp = userList.stream()
+			.filter(e->e.getEmail().equals(email))
+			.findAny();
+		
 		return userOp;
 	}
-	
 	
 	@Override
 	public void deleteAll() {
 		userList = new ArrayList<User>();
 		nextIndex = 1L;
 	}
-
-	
-	
-	
-	
 
 }

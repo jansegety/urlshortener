@@ -2,9 +2,7 @@ package jansegety.urlshortener.entity;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import jansegety.urlshortener.service.encoding.Base62Encoder;
 import jansegety.urlshortener.service.encoding.Encoder;
 
 
@@ -25,31 +22,19 @@ import jansegety.urlshortener.service.encoding.Encoder;
 class UrlPackTest {
 	
 	@Autowired
-	private UrlPack urlPack;
-	@Autowired
-	private UrlPack urlPack1;
-	@Autowired
-	private UrlPack urlPack2;
-
-	@Test
-	@DisplayName("prototype Scope bean은 DI시 항상 다른 객체여야 한다.")
-	void when_prototypeScopeBeanDI_then_TheMustDifferentObject() {
-		
-		assertNotNull(urlPack1);
-		assertNotNull(urlPack2);
-		assertThat(urlPack1, is(not(urlPack2)));
-		
-	}
-	
+	private Encoder<Long, String> encoder;
 	
 	@Test
 	@DisplayName("id가 할당된 상태에서 다시 할당하면 IllegalStateException 발생")
 	void when_idReAssigned_then_throwIllegalStateException() {
 		
+		
+		UrlPack urlPack = new UrlPack();
+		
 		urlPack.setId(1L);
 		assertThrows(IllegalStateException.class, ()->{
-			urlPack.setId(2L);
-		});
+				urlPack.setId(2L);
+			});
 		
 	}
 	
@@ -57,10 +42,10 @@ class UrlPackTest {
 	@DisplayName("id가 할당되면 자동으로 shortUrl이 생성되어야 한다.")
 	void when_idAssigned_then_shortUrlMustbeCreated() {
 		
-		Encoder<Long, String> encoder = new Base62Encoder();
+		UrlPack urlPack = new UrlPack();
 		
 		urlPack.setId(12345L);
-		urlPack.createValueEncoded();
+		urlPack.createValueEncoded(encoder);
 		
 		String encodedValue = encoder.encoding(12345L);
 		
@@ -69,15 +54,14 @@ class UrlPackTest {
 	}
 	
 	@Test
-	@DisplayName("일치하지 않는 longUrl로 shortUrl을 요청하면 IllegalArgumentException 발생")
-	void when_requestShortUrlWithMisMatchedLongUrl_then_throwIllegalArgumentException() {
+	@DisplayName("일치하지 않는 originalUrl로 shortUrl을 요청하면 IllegalArgumentException 발생")
+	void when_requestShortUrlWithMisMatchedoriginalUrl_then_throwIllegalArgumentException() {
 		
-		UrlPack urlPack = new UrlPack(new Base62Encoder());
-		urlPack.setLongUrl("AAA.long.url");
+		UrlPack urlPack = new UrlPack();
+		urlPack.setOriginalUrl("AAA.long.url");
 		
-		assertThrows(IllegalArgumentException.class, ()->{
-			urlPack.requestShortUrlWithLongUrl("BBB.long.url");
-		});
+		assertThrows(IllegalArgumentException.class, 
+				()->urlPack.requestShortUrlWithoriginalUrl("BBB.long.url"));
 	}
 	
 

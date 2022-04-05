@@ -15,28 +15,22 @@ public class ClientApplicationMemorryRepository implements ClientApplicationRepo
 	
 	private List<ClientApplication> clientApplicationList = new ArrayList<>(); 
 	
-
 	@Override
 	public void save(ClientApplication clientApplication) {
-
-		
 		clientApplication.setId(UUID.randomUUID());
 		clientApplicationList.add(clientApplication);
-		
 	}
 
 	@Override
 	public void deleteAll() {
-
 		clientApplicationList = new ArrayList<>(); 
 	}
 
 	@Override
 	public Optional<ClientApplication> findById(UUID id) {		
-		return clientApplicationList.stream().filter(e->e.getId().equals(id)).findAny();
+		return clientApplicationList.stream()
+			.filter(e->e.getId().equals(id))
+			.findAny();
 	}
 	
-	
-	
-
 }

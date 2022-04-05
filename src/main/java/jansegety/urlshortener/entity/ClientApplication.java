@@ -34,8 +34,7 @@ public class ClientApplication {
 	private User user;
 	
 
-	public void setId(UUID id)
-	{
+	public void setId(UUID id){
 		if(this.id != null)
 			throw new IllegalStateException("id가 이미 할당되었습니다.");
 		
@@ -60,10 +59,8 @@ public class ClientApplication {
 
 	@Override
 	public String toString() {
-		return "ClientApplication [id=" + id + ", name=" + name + ", clientSecret=" + clientSecret + "]";
-	}
-	
-	
-	
+		return "ClientApplication [id=" + id + ", name=" + name 
+				+ ", clientSecret=" + clientSecret + "]";
+	}	
 
 }

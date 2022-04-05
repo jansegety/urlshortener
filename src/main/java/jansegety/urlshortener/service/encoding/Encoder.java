@@ -8,5 +8,4 @@ public interface Encoder<S,T> {
 	public T encoding(S source);
 	public S decoding(T encoded);
 	
-
 }

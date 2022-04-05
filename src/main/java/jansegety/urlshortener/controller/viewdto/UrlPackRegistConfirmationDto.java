@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 public class UrlPackRegistConfirmationDto {
 	
-	private String longUrl;
+	private String originalUrl;
 	private String shortUrl;
 
 }

@@ -14,5 +14,4 @@ public interface ClientApplicationService {
 	
 	public Optional<ClientApplication> findById(UUID id);
 	
-	
 }

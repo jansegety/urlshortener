@@ -3,7 +3,6 @@ package jansegety.urlshortener.entity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.Scope;
 
 import jansegety.urlshortener.service.encoding.Base62Encoder;
 import jansegety.urlshortener.service.encoding.Encoder;
@@ -13,16 +12,8 @@ import jansegety.urlshortener.service.encoding.Encoder;
 public class ConfigForUrlPackTest {
 	
 	@Bean
-	@Scope("prototype") //class에 prototype 선언이 되어 있어도 그것은 componant scan시에 작동한다.
-	public UrlPack urlPack() {
-		
-		return new UrlPack(encoder());
-	}
-	
-	
-	@Bean
-	public Encoder encoder() {
+	public Encoder<Long, String> encoder() {
 		return new Base62Encoder();
 	}
-
+	
 }

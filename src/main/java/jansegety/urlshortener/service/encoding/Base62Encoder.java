@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component;
 public class Base62Encoder implements Encoder<Long, String>{
 	
 	final int RADIX = 62;
-	final String CODEC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	final String CODEC = 
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 	@Override
 	public String encoding(Long source) {

@@ -11,12 +11,14 @@ import jansegety.urlshortener.entity.User;
 @Service
 public interface UrlPackService {
 	
-	public void registAndEncoding(UrlPack urlPack);
+	public void regist(UrlPack urlPack);
 	
 	public List<UrlPack> findAll();
 	
 	public List<UrlPack> findByUser(User user);
 	
-	public Optional<UrlPack> findByValueEncoded(String shortUrl); 
+	public Optional<UrlPack> findByValueEncoded(String shortUrl);
+
+	 
 	
 }

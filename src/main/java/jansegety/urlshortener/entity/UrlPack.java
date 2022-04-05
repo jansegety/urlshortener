@@ -8,10 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import jansegety.urlshortener.service.encoding.Encoder;
 
 
@@ -20,16 +16,14 @@ import jansegety.urlshortener.service.encoding.Encoder;
  */
 @Table(name = "url_pack")
 @Entity
-@Component
-@Scope("prototype")
 public class UrlPack{
 	
 	@Id @GeneratedValue
 	@Column(name = "id")
 	private Long id;
 	
-	@Column(name = "long_url")
-	private String longUrl;
+	@Column(name = "original_url")
+	private String origianlUrl;
 	@Column(name = "value_encoded")
 	private String valueEncoded;
 	
@@ -40,14 +34,6 @@ public class UrlPack{
 	@ManyToOne
 	@JoinColumn(name = "id")
 	private User user;
-
-	private Encoder<Long, String> encoder;
-	
-	
-	@Autowired
-	public UrlPack(Encoder<Long, String> encoder) {
-		this.encoder = encoder;
-	};
 	
 	
 	public Long getId() {
@@ -60,16 +46,15 @@ public class UrlPack{
 		
 		this.id = id;
 	}
-	public String getLongUrl() {
-		return longUrl;
+	public String getOriginalUrl() {
+		return origianlUrl;
 	}
-	public void setLongUrl(String longUrl) {
-		this.longUrl = longUrl;
+	public void setOriginalUrl(String originalUrl) {
+		this.origianlUrl = originalUrl;
 	}
 	public String getValueEncoded() {
 		return valueEncoded;
 	}
-	
 	
 	public Integer getRequestNum() {
 		return requestNum;
@@ -79,7 +64,6 @@ public class UrlPack{
 		return user;
 	}
 
-
 	public void setRequestNum(Integer requestNum) {
 		this.requestNum = requestNum;
 	}
@@ -87,20 +71,16 @@ public class UrlPack{
 	public void setUser(User user) {
 		this.user = user;
 	}
-
 	
-	public String requestShortUrlWithLongUrl(String longUrl)
-	{
-		if(!this.longUrl.equals(longUrl))
-			throw new IllegalArgumentException("longUrl이 일치하지 않습니다.");
-		
+	public String requestShortUrlWithoriginalUrl(String originalUrl) {
+		if(!this.origianlUrl.equals(originalUrl))
+			throw new IllegalArgumentException("originalUrl이 일치하지 않습니다.");
 		requestNum++;
-		
 		return valueEncoded;
 	}
 	
 	
-	public void createValueEncoded() {
+	public void createValueEncoded(Encoder<Long, String> encoder) {
 		
 		if(id==null)
 			throw new IllegalStateException("encoding할 id가 아직 할당되지 않았습니다.");
@@ -108,13 +88,10 @@ public class UrlPack{
 		this.valueEncoded = encoder.encoding(this.id);
 	}
 	
-	
 	@Override
 	public String toString() {
-		return "UrlPack [id=" + id + ", longUrl=" + longUrl + ", valueEncoded=" + valueEncoded + "]";
+		return "UrlPack [id=" + id + ", originalUrl=" + origianlUrl 
+				+ ", valueEncoded=" + valueEncoded + "]";
 	}
-	
-	
-	
 
 }

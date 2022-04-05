@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import jansegety.urlshortener.entity.ClientApplication;
 import jansegety.urlshortener.repository.ClientApplicationRepository;
-import jansegety.urlshortener.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,6 +26,4 @@ public class ImplClientApplicationService implements ClientApplicationService{
 		return clientApplicationRepository.findById(id);
 	}
 	
-	
-
 }

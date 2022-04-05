@@ -17,28 +17,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthLoginInterceptor implements HandlerInterceptor {
 	
-	@Value("${path.loginInEssential}")
-	public List<String> loginInEssential; //= new ArrayList<>();
+	@Value("${path.login.inEssential}")
+	public List<String> loginInEssential;
 	
 	private final UserService userService;
 	
 	
 	@Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, 
+    		HttpServletResponse response, 
+    		Object handler) throws Exception {
 		
 		Long userId = (Long)request.getSession().getAttribute("userId");
 		
 		//세션에 사용자 id가 있다면
-		if(userId != null)
-		{	
-			
+		if(userId != null) {	
 			Optional<User> userOp = userService.findById(userId);
 			//세션 사용자 id가 등록된 사용자라면
-			if(userOp.isPresent())
-			{
+			if(userOp.isPresent()) {
 				//loginUser를 반환받아 request에 넣어준다
 				request.setAttribute("loginUser", userOp.get());
-				System.out.println("loginUser : 안녕하세요" +  userOp.get());
 				return true;
 			}
 		}
@@ -51,9 +49,6 @@ public class AuthLoginInterceptor implements HandlerInterceptor {
     
         response.sendRedirect("/user/login");
         return false;
-       
-		
     }
-
 
 }

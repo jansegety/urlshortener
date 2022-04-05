@@ -11,7 +11,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class UrlInfoForUrlPackListDto {
 
-	private String longUrl;
+	private String originalUrl;
 	private String shortUrl;
 	private int requstNum;
 	

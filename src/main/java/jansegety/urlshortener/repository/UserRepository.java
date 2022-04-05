@@ -10,11 +10,8 @@ import jansegety.urlshortener.entity.User;
 public interface UserRepository {
 	
 	public void save(User user);
-	
 	public Optional<User> findById(Long id);
-	
 	public Optional<User> findByEmail(String email);
-	
 	public void deleteAll();
-
+	
 }

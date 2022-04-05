@@ -10,14 +10,9 @@ import jansegety.urlshortener.entity.User;
 @Repository
 public interface UrlPackRepository {
 
-	
 	public void save(UrlPack urlPack);
-	
 	public List<UrlPack> findAll();
-	
 	public List<UrlPack> findByUser(User user);
-	
 	public void deleteAll();
-	
 	
 }

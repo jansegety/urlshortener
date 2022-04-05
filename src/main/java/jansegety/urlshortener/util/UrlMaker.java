@@ -17,7 +17,8 @@ public class UrlMaker {
 		
 		StringBuilder stringBuilder = new StringBuilder();
 		
-		return stringBuilder.append("https://").append(domainName).append("/").append(additionalUrl).toString();
+		return stringBuilder.append("https://").append(domainName).append("/")
+				.append(additionalUrl).toString();
 	}
 
 }

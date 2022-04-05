@@ -19,16 +19,13 @@ public class RedirectController {
 	
 	private final UrlPackService urlPackService;
 	
-	
 	@RequestMapping("/{valueEncoded}")
-	public void redirectToLongUrl(@PathVariable String valueEncoded, HttpServletResponse response) {
+	public void redirectTooriginalUrl(@PathVariable String valueEncoded, 
+			HttpServletResponse response) {
 		
 		Optional<UrlPack> opUrlPack = urlPackService.findByValueEncoded(valueEncoded);
 		
-		
-		
-		if(opUrlPack.isEmpty())
-		{
+		if(opUrlPack.isEmpty()){
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return ;
 		}
@@ -37,10 +34,8 @@ public class RedirectController {
 		urlPack.setRequestNum(urlPack.getRequestNum()+1);
 		
 		response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-		response.setHeader("Location", urlPack.getLongUrl());
-		response.setHeader("Connection", "keep-alive");
+		response.setHeader("Location", urlPack.getOriginalUrl());
 		
 	}
 	
-
 }
